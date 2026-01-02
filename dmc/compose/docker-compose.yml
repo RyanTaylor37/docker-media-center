@@ -152,3 +152,45 @@ services:
       - "traefik.http.routers.dmc-jellyseerr.tls.certresolver=letsencrypt"
       - "traefik.docker.network=global"
 
+  # Recyclarr - Quality Profile Management
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr:latest
+    container_name: dmc-recyclarr
+    restart: unless-stopped
+    user: ${ENV_PUID}:${ENV_PGID}
+    environment:
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${SERVICES_DIR}/recyclarr:/config
+    networks:
+      - local
+    entrypoint: /bin/sh
+    command: -c "recyclarr sync && while true; do sleep 86400 && recyclarr sync; done"
+    # Syncs on startup, then every 24 hours
+
+  # Cleanuparr - Auto-remove stalled torrents
+  cleanuparr:
+    image: ghcr.io/cleanuparr/cleanuparr:latest
+    container_name: dmc-cleanuparr
+    restart: unless-stopped
+    environment:
+      - PUID=${ENV_PUID}
+      - PGID=${ENV_PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${SERVICES_DIR}/cleanuparr:/config
+    networks:
+      - global
+      - local
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dmc-cleanuparr.rule=Host(`${SUB_DOMAIN_CLEANUPARR}.${DOMAIN}`)"
+      - "traefik.http.routers.dmc-cleanuparr.tls=true"
+      - "traefik.http.routers.dmc-cleanuparr.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.dmc-cleanuparr.middlewares=dmc-auth"
+      - "traefik.http.services.dmc-cleanuparr.loadbalancer.server.port=11011"
+      - "traefik.docker.network=global"
+
+
+
+
