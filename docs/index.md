@@ -34,7 +34,7 @@ Riven replaces sonarr, radarr, prowlarr (optional), download client (torrent / d
 However there's a small subscription cost for a debrid service which provides the unlimited shared storage.
 
 ### Arr stack
-**Services:** Jellyfin, Jellyseerr, Sonarr, Radarr, Prowlarr, qBittorrent, Gluetun
+**Services:** Jellyfin, Jellyseerr, Sonarr, Radarr, Prowlarr, qBittorrent, Recyclarr, Cleanuparr, Gluetun
 
 The traditional setup using arr services can provide more granular control. 
 Debrid can be also used with arr stack leveraging the unlimited storage.
